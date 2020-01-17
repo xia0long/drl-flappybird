@@ -19,8 +19,8 @@ class FlappyBird(object):
     screen = display.set_mode((screen_width, screen_height))
     display.set_caption('Flappy Bird')
 
-    base_image = load('assets/base.jpg').convert_alpha()
-    background_image = load('assets/background-black.jpg').convert()
+    base_image = load('assets/base.png').convert_alpha()
+    background_image = load('assets/background-black.png').convert()
 
     base_image = load('assets/base.png').convert_alpha()
     background_image = load('assets/background-black.png').convert()
@@ -30,12 +30,11 @@ class FlappyBird(object):
     bird_images = [load('assets/redbird-upflap.png').convert_alpha(),
                    load('assets/redbird-midflap.png').convert_alpha(),
                    load('assets/redbird-downflap.png').convert_alpha()]
-    # number_images = [load('assets/{}.png'.format(i)).convert_alpha() for i in range(10)]
 
     bird_hitmask = [pixels_alpha(image).astype(bool) for image in bird_images]
     pipe_hitmask = [pixels_alpha(image).astype(bool) for image in pipe_images]
 
-    fps = 30
+    fps = 30000
     pipe_gap_size = 100
     pipe_velocity_x = -4
 
@@ -118,6 +117,13 @@ class FlappyBird(object):
                 reward = 1
                 break
 
+        # get detal_x, detal_y
+        for pipe in self.pipes:
+            if self.bird_x < pipe["x_lower"] + self.pipe_width:
+                detal_x = pipe['x_lower'] + self.pipe_width - self.bird_x - self.bird_width
+                detal_y = pipe['y_lower'] - self.bird_y + self.bird_height
+                break
+
         # Update index and iteration
         if (self.iter + 1) % 3 == 0:
             self.bird_index = next(self.bird_index_generator)
@@ -147,10 +153,6 @@ class FlappyBird(object):
             reward = -1
             self.__init__()
 
-        # get detal_x, detal_y
-        detal_x = self.pipes[0]['x_lower'] - self.bird_x
-        detal_y = self.pipes[0]['y_lower'] - self.bird_y
-
         # Draw everything
         self.screen.blit(self.background_image, (0, 0))
         self.screen.blit(self.base_image, (self.base_x, self.base_y))
@@ -169,5 +171,5 @@ if __name__ == "__main__":
     import random
     fb = FlappyBird()
     while 1:
-        image, reward, terminal, score, [detal_x, detal_y] = fb.next_frame(random.randint(0, 1))
+        image, reward, terminal, score, [detal_x, detal_y] = fb.next_frame(random.choice[0, 1])
         print(reward, terminal, detal_x, detal_y)
