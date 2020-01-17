@@ -18,6 +18,10 @@ class FlappyBird(object):
     screen_height = 512
     screen = display.set_mode((screen_width, screen_height))
     display.set_caption('Flappy Bird')
+
+    base_image = load('assets/base.jpg').convert_alpha()
+    background_image = load('assets/background-black.jpg').convert()
+
     base_image = load('assets/base.png').convert_alpha()
     background_image = load('assets/background-black.png').convert()
 
@@ -101,7 +105,7 @@ class FlappyBird(object):
         reward = 0.1
         terminal = False
         # Check input action
-        if action == 1:
+        if action == 'flap':
             self.current_velocity_y = self.upward_speed
             self.is_flapped = True
 
@@ -143,6 +147,10 @@ class FlappyBird(object):
             reward = -1
             self.__init__()
 
+        # get detal_x, detal_y
+        detal_x = self.pipes[0]['x_lower'] - self.bird_x
+        detal_y = self.pipes[0]['y_lower'] - self.bird_y
+
         # Draw everything
         self.screen.blit(self.background_image, (0, 0))
         self.screen.blit(self.base_image, (self.base_x, self.base_y))
@@ -153,10 +161,13 @@ class FlappyBird(object):
         image = array3d(display.get_surface())
         display.update()
         self.fps_clock.tick(self.fps)
-        return image, reward, terminal
+        # return image, reward, terminal
+        return image, reward, terminal, self.score, [detal_x, detal_y]
 
 
 if __name__ == "__main__":
     import random
     fb = FlappyBird()
-    fb.next_frame(random.randint(0, 1))
+    while 1:
+        image, reward, terminal, score, [detal_x, detal_y] = fb.next_frame(random.randint(0, 1))
+        print(reward, terminal, detal_x, detal_y)
