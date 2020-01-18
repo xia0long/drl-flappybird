@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 
 class QLearningTable:
-    def __init__(self, actions, learning_rate=0.7, reward_decay=0.8, e_greedy=0.9):
+    def __init__(self, actions, learning_rate=0.6, reward_decay=0.8, e_greedy=0.9):
         self.actions = actions
         self.lr = learning_rate
         self.gamma = reward_decay
@@ -43,3 +43,4 @@ class QLearningTable:
                 index=self.q_table.columns,
                 name=str(state)
             ))
+
