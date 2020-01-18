@@ -34,7 +34,7 @@ class FlappyBird(object):
     bird_hitmask = [pixels_alpha(image).astype(bool) for image in bird_images]
     pipe_hitmask = [pixels_alpha(image).astype(bool) for image in pipe_images]
 
-    fps = 30
+    fps = 40
     pipe_gap_size = 100
     pipe_velocity_x = -4
 
@@ -120,7 +120,7 @@ class FlappyBird(object):
         # get detal_x, detal_y
         for pipe in self.pipes:
             if self.bird_x < pipe["x_lower"] + self.pipe_width:
-                detal_x = pipe['x_lower'] + self.pipe_width - self.bird_x - self.bird_width
+                detal_x = pipe['x_lower'] + self.pipe_width - self.bird_x
                 detal_y = pipe['y_lower'] - self.bird_y + self.bird_height
                 break
 
