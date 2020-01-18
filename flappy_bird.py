@@ -34,7 +34,7 @@ class FlappyBird(object):
     bird_hitmask = [pixels_alpha(image).astype(bool) for image in bird_images]
     pipe_hitmask = [pixels_alpha(image).astype(bool) for image in pipe_images]
 
-    fps = 30000
+    fps = 300
     pipe_gap_size = 100
     pipe_velocity_x = -4
 
@@ -101,7 +101,7 @@ class FlappyBird(object):
 
     def next_frame(self, action):
         pump()
-        reward = 0.1
+        reward = 1
         terminal = False
         # Check input action
         if action == 'flap':
@@ -114,7 +114,7 @@ class FlappyBird(object):
             pipe_center_x = pipe["x_upper"] + self.pipe_width / 2
             if pipe_center_x < bird_center_x < pipe_center_x + 5:
                 self.score += 1
-                reward = 1
+                # reward = 1
                 break
 
         # get detal_x, detal_y
@@ -150,7 +150,7 @@ class FlappyBird(object):
             del self.pipes[0]
         if self.is_collided():
             terminal = True
-            reward = -1
+            reward = -100
             self.__init__()
 
         # Draw everything
@@ -164,12 +164,12 @@ class FlappyBird(object):
         display.update()
         self.fps_clock.tick(self.fps)
         # return image, reward, terminal
-        return image, reward, terminal, self.score, [detal_x, detal_y]
+        return image, reward, terminal, self.score, [int(detal_x/5.0), int(detal_y/5.0)]
 
 
 if __name__ == "__main__":
     import random
     fb = FlappyBird()
     while 1:
-        image, reward, terminal, score, [detal_x, detal_y] = fb.next_frame(random.choice[0, 1])
-        print(reward, terminal, detal_x, detal_y)
+        image, reward, terminal, score, [detal_x, detal_y] = fb.next_frame(random.choice([0, 'flap']))
+        print(reward, terminal, [detal_x, detal_y])

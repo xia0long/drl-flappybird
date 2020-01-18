@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 
 class QLearningTable:
-    def __init__(self, actions, learning_rate=0.01, reward_decay=0.9, e_greedy=0.9):
+    def __init__(self, actions, learning_rate=0.7, reward_decay=0.8, e_greedy=0.9):
         self.actions = actions
         self.lr = learning_rate
         self.gamma = reward_decay
@@ -16,9 +16,12 @@ class QLearningTable:
             state_action = self.q_table.loc[str(observation), :]
             if state_action['flap'] > state_action['do nothing']:
                 action = 'flap'
+            elif state_action['flap'] == state_action['do nothing']:
+                action = np.random.choice(self.actions)
             else:
                 action = 'do nothing'
         else:
+            # print('random action.')
             action = np.random.choice(self.actions)
         return action
 
@@ -30,6 +33,7 @@ class QLearningTable:
         else:
             q_target = r  # next state is terminal
         self.q_table.loc[str(s), a] += self.lr * (q_target - q_predict)  # update
+        # print(self.q_table.loc[str(s), a])
 
     def check_state_exist(self, state):
         if str(state) not in self.q_table.index:
