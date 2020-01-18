@@ -164,7 +164,7 @@ class FlappyBird(object):
         display.update()
         self.fps_clock.tick(self.fps)
         # return image, reward, terminal
-        return image, reward, terminal, self.score, [int(detal_x/5.0), int(detal_y/5.0)]
+        return image, reward, terminal, self.score, [int(detal_x/15.0), int(detal_y/15.0)]
 
 
 if __name__ == "__main__":
