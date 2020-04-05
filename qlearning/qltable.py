@@ -11,16 +11,12 @@ class QLearningTable:
 
     def choose_action(self, observation):
         self.check_state_exist(observation)
-        # if np.random.uniform() < self.epsilon:
-        state_action = self.q_table[observation]
-        if state_action[0] > state_action[1]:
-            action = 0
+        if np.random.uniform() < self.epsilon:
+            state_action = self.q_table[observation]
+            action = 0 if state_action[0] > state_action[1] else  1
         else:
-            action = 1
-        # else:
-        #     action = np.random.choice(self.actions)
+            action = np.random.choice(self.actions)
             
-        # print(observation, self.q_table[observation], action)
         return action
 
     def learn(self, s, a, r, s_):
@@ -35,4 +31,3 @@ class QLearningTable:
     def check_state_exist(self, state):
         if state not in self.q_table:
             self.q_table[state] = [0, 0]
-

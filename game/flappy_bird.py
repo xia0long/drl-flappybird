@@ -1,6 +1,7 @@
 """
 @author: Viet Nguyen <nhviet1009@gmail.com>
 """
+import os
 import math
 from itertools import cycle
 
@@ -13,6 +14,9 @@ from pygame.surfarray import array3d, pixels_alpha
 from pygame.transform import rotate
 import numpy as np
 
+
+base_path = os.path.dirname(__file__)
+
 class FlappyBird(object):
     init()
     fps_clock = time.Clock()
@@ -21,17 +25,14 @@ class FlappyBird(object):
     screen = display.set_mode((screen_width, screen_height))
     display.set_caption('Flappy Bird')
 
-    base_image = load('assets/base.png').convert_alpha()
-    background_image = load('assets/background-black.png').convert()
+    base_image = load(os.path.join(base_path, 'assets/base.png')).convert_alpha()
+    background_image = load(os.path.join(base_path, 'assets/background-black.png')).convert()
 
-    base_image = load('assets/base.png').convert_alpha()
-    background_image = load('assets/background-black.png').convert()
-
-    pipe_images = [rotate(load('assets/pipe-green.png').convert_alpha(), 180),
-                   load('assets/pipe-green.png').convert_alpha()]
-    bird_images = [load('assets/redbird-upflap.png').convert_alpha(),
-                   load('assets/redbird-midflap.png').convert_alpha(),
-                   load('assets/redbird-downflap.png').convert_alpha()]
+    pipe_images = [rotate(load(os.path.join(base_path, 'assets/pipe-green.png')).convert_alpha(), 180),
+                   load(os.path.join(base_path, 'assets/pipe-green.png')).convert_alpha()]
+    bird_images = [load(os.path.join(base_path, 'assets/redbird-upflap.png')).convert_alpha(),
+                   load(os.path.join(base_path, 'assets/redbird-midflap.png')).convert_alpha(),
+                   load(os.path.join(base_path, 'assets/redbird-downflap.png')).convert_alpha()]
 
     bird_hitmask = [pixels_alpha(image).astype(bool) for image in bird_images]
     pipe_hitmask = [pixels_alpha(image).astype(bool) for image in pipe_images]
@@ -51,7 +52,6 @@ class FlappyBird(object):
     def __init__(self):
 
         self.iter = self.bird_index = self.score = 0
-
         self.bird_width = self.bird_images[0].get_width()
         self.bird_height = self.bird_images[0].get_height()
         self.pipe_width = self.pipe_images[0].get_width()
@@ -161,7 +161,7 @@ class FlappyBird(object):
             reward = -1000
             self.__init__()
 
-        # update detla_x, detla_y
+        # show info
         font = pygame.font.Font('freesansbold.ttf', 20)
         info = font.render(text,False,(255,200,10))
 
@@ -178,12 +178,8 @@ class FlappyBird(object):
         image = array3d(display.get_surface())
         display.update()
         self.fps_clock.tick(self.fps)
-        # return image, reward, terminal
-        # if detal_x < 15:
-        #     print(str([int(detal_x/15), int(detal_y/15)]))
-        return reward, terminal, self.score, str((int(detal_x/5), int(detal_y/5)))
-        # return reward, terminal, self.score, str([detal_x, detal_y])
 
+        return reward, terminal, self.score, str((int(detal_x/10), int(detal_y/10)))
 
 if __name__ == "__main__":
     import random
