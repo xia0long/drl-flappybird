@@ -1,15 +1,17 @@
 """
 @author: Viet Nguyen <nhviet1009@gmail.com>
 """
+import math
 from itertools import cycle
+
 from numpy.random import randint
+import pygame
 from pygame import Rect, init, time, display
 from pygame.event import pump
 from pygame.image import load
 from pygame.surfarray import array3d, pixels_alpha
 from pygame.transform import rotate
 import numpy as np
-
 
 class FlappyBird(object):
     init()
@@ -34,14 +36,14 @@ class FlappyBird(object):
     bird_hitmask = [pixels_alpha(image).astype(bool) for image in bird_images]
     pipe_hitmask = [pixels_alpha(image).astype(bool) for image in pipe_images]
 
-    fps = 40
+    fps = 100
     pipe_gap_size = 100
     pipe_velocity_x = -4
 
     # parameters for bird
     min_velocity_y = -8
     max_velocity_y = 10
-    downward_speed = 1
+    downward_speed = 2
     upward_speed = -9
 
     bird_index_generator = cycle([0, 1, 2, 1])
@@ -99,12 +101,12 @@ class FlappyBird(object):
                     return True
         return False
 
-    def next_frame(self, action):
+    def next_frame(self, action, text=''):
         pump()
         reward = 1
         terminal = False
         # Check input action
-        if action == 'flap':
+        if action == 0: # 0 means flap
             self.current_velocity_y = self.upward_speed
             self.is_flapped = True
 
@@ -114,7 +116,6 @@ class FlappyBird(object):
             pipe_center_x = pipe["x_upper"] + self.pipe_width / 2
             if pipe_center_x < bird_center_x < pipe_center_x + 5:
                 self.score += 1
-                # reward = 1
                 break
 
         # get detal_x, detal_y
@@ -122,8 +123,15 @@ class FlappyBird(object):
             if self.bird_x < pipe["x_lower"] + self.pipe_width:
                 detal_x = pipe['x_lower'] + self.pipe_width - self.bird_x
                 detal_y = pipe['y_lower'] - self.bird_y + self.bird_height
+        
+                # a triangle
+                points = (
+                    (self.bird_x, self.bird_y + self.bird_height),
+                    (pipe['x_lower'] + self.pipe_width, pipe['y_lower']),
+                    (self.bird_x, pipe['y_lower'])
+                )
                 break
-
+    
         # Update index and iteration
         if (self.iter + 1) % 3 == 0:
             self.bird_index = next(self.bird_index_generator)
@@ -150,8 +158,12 @@ class FlappyBird(object):
             del self.pipes[0]
         if self.is_collided():
             terminal = True
-            reward = -100
+            reward = -1000
             self.__init__()
+
+        # update detla_x, detla_y
+        font = pygame.font.Font('freesansbold.ttf', 20)
+        info = font.render(text,False,(255,200,10))
 
         # Draw everything
         self.screen.blit(self.background_image, (0, 0))
@@ -160,16 +172,36 @@ class FlappyBird(object):
         for pipe in self.pipes:
             self.screen.blit(self.pipe_images[0], (pipe["x_upper"], pipe["y_upper"]))
             self.screen.blit(self.pipe_images[1], (pipe["x_lower"], pipe["y_lower"]))
+        self.screen.blit(info, (0, 100))
+        pygame.draw.polygon(display.get_surface(), (255, 0, 0), points, width=1) 
+        
         image = array3d(display.get_surface())
         display.update()
         self.fps_clock.tick(self.fps)
         # return image, reward, terminal
-        return image, reward, terminal, self.score, [int(detal_x/15.0), int(detal_y/15.0)]
+        # if detal_x < 15:
+        #     print(str([int(detal_x/15), int(detal_y/15)]))
+        return reward, terminal, self.score, str((int(detal_x/5), int(detal_y/5)))
+        # return reward, terminal, self.score, str([detal_x, detal_y])
 
 
 if __name__ == "__main__":
     import random
+    import cv2
+    import pygame
     fb = FlappyBird()
+
+    # pygame.init()
+    # pygame.display.set_caption("OpenCV camera stream on Pygame")
+    # screen = pygame.display.set_mode((512, 288))
     while 1:
-        image, reward, terminal, score, [detal_x, detal_y] = fb.next_frame(random.choice([0, 'flap']))
-        print(reward, terminal, [detal_x, detal_y])
+        fb.next_frame(random.choice([0, 1]))
+    #    reward, terminal, score, [detal_x, detal_y] = fb.next_frame(random.choice([0, 1]))
+        # print(reward, terminal, [detal_x, detal_y])
+        # cv2.imshow('',image)
+        # break
+        # frame = pygame.surfarray.make_surface(image)
+        # screen.blit(frame, (0,0))
+        # pygame.display.update()
+        # print(image.shape)
+        # cv2.waitKey(1)
