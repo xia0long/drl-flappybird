@@ -159,7 +159,7 @@ class FlappyBird(object):
         if self.is_collided():
             terminal = True
             reward = -1000
-            self.__init__()
+            # self.__init__()
 
         # show info
         font = pygame.font.Font('freesansbold.ttf', 20)
