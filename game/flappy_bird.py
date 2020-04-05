@@ -179,7 +179,7 @@ class FlappyBird(object):
         display.update()
         self.fps_clock.tick(self.fps)
 
-        return reward, terminal, self.score, str((int(detal_x/10), int(detal_y/10)))
+        return reward, terminal, self.score, str((int(detal_x/4), int(detal_y/4)))
 
 if __name__ == "__main__":
     import random
