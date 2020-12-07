@@ -2,7 +2,7 @@ import random
 import numpy as np
 
 class QLearningTable:
-    def __init__(self, actions=[0, 1], learning_rate=0.6, reward_decay=0.8, e_greedy=0.99):
+    def __init__(self, actions=[0, 1], learning_rate=0.6, reward_decay=0.8, e_greedy=1):
         self.actions = actions
         self.lr = learning_rate
         self.gamma = reward_decay
