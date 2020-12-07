@@ -159,7 +159,7 @@ class FlappyBird(object):
         if self.is_collided():
             terminal = True
             reward = -1000
-            # self.__init__()
+            self.__init__()
 
         # show info
         font = pygame.font.Font('freesansbold.ttf', 20)
@@ -179,7 +179,7 @@ class FlappyBird(object):
         display.update()
         self.fps_clock.tick(self.fps)
 
-        return reward, terminal, self.score, str((int(detal_x/4), int(detal_y/4)))
+        return image, reward, terminal, self.score, str((int(detal_x/4), int(detal_y/4)))
 
 if __name__ == "__main__":
     import random
@@ -192,7 +192,7 @@ if __name__ == "__main__":
     # screen = pygame.display.set_mode((512, 288))
     while 1:
         fb.next_frame(random.choice([0, 1]))
-    #    reward, terminal, score, [detal_x, detal_y] = fb.next_frame(random.choice([0, 1]))
+        # reward, terminal, score, [detal_x, detal_y] = fb.next_frame(random.choice([0, 1]))
         # print(reward, terminal, [detal_x, detal_y])
         # cv2.imshow('',image)
         # break
@@ -201,3 +201,4 @@ if __name__ == "__main__":
         # pygame.display.update()
         # print(image.shape)
         # cv2.waitKey(1)
+
